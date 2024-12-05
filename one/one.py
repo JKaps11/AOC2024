@@ -1,18 +1,31 @@
-import requests
+# Getting input into two lists
+list_one = []
+list_two = []
 
-# Create a session object
-session = requests.Session()
+with open("aoc1input", "r") as file:
+    for line in file:
+        line = line.strip()
+        cur_word = ""
+        i = 0
+        while i < len(line):
+            if line[i] == " ":
+                list_one.append(int(cur_word))
+                cur_word = ""
+                while line[i] == " ":
+                    i += 1
+            else:
+                cur_word += line[i]
+                i += 1
+        list_two.append(int(cur_word))
 
-# Generate a unique session ID (if needed)
-session_id = "53616c7465645f5ff1cc36642816608561294178461eb44fa45a6381647f9401eda6882c2edaca7af8603ec71f76d5434eb1e57b01e47551a2e03022c8db06db"
+# Sorting elements in each list
+list_one.sort()
+list_two.sort()
 
-headers = {'User-Agent': 'github.com/{$userName}/{$repository} by {$email}'}
+# Finding total distance
+total_distance = 0
 
-# Add the session ID to the headers
-session.headers.update({"Session-ID": session_id})
+for i in range(len(list_one)):
+    total_distance += abs(list_one[i] - list_two[i])
 
-# Make a request using the session
-response = session.get("https://adventofcode.com/2024/day/1/input")
-
-# Print the response
-print(response.text)
+print(total_distance)
