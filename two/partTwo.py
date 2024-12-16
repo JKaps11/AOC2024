@@ -19,11 +19,10 @@ with open("aoc2input", "r") as file:
             
                 num = int(num)
                 test_list.append(num)
-    
+                
                 if not(1 <= abs(last_inc_num-num) <= 3) and not(i < (len(str(num))+1)):
                     # print(f"activating: length(str(bum)) = {len(str(num))} ")
                     isSafeDiff = False
-                    break
 
                 if last_inc_num > num:
                     isSafeInc = False
@@ -36,73 +35,66 @@ with open("aoc2input", "r") as file:
                 
                 num = ""
             num += line[i]
-
+        
         if (isSafeInc or isSafeDec) and isSafeDiff:
             num_safe += 1
-           # print(f"Safe: {test_list}")
+            continue
+            
 
         elif not(isSafeDiff):
-            # print(f"Unsafe list before check: {test_list}")
+            #print(f"Unsafe list before check: {test_list}")
             # Testing Diffenece
-            # print("testing difference")
+            #print("testing difference")
             element = 0
-            idx = 0
-            for i in range(1, len(test_list)):
+            for i in range(1, len(test_list)-1):
                 if not(1<= abs(test_list[i-1] - test_list[i]) <= 3) and not(isCorrected):
-                    element = test_list.pop(i)
-                    i = i
-                    # print(f"Popping element: {element}")
-                    isCorrected = True
-                    continue
-                elif not(1<= abs(test_list[i-1] - test_list[i]) <= 3) and isCorrected:
-                    test_list.insert(idx, element)
-                    isCorrected = False
+                    
+                    if i == len(test_list)- 1:
+                        element=test_list.pop(i)
+                        isSafeDiff = True
+                        isCorrected = True
+                        
+                     
+                    elif 1<= abs(test_list[i-1] - test_list[i+1]) <= 3:
+                        element = test_list.pop(i)
+                        isSafeDiff = True
+                        isCorrected = True
+                        break
+                    
+                elif isCorrected:
+                    isSafeDiff = False
                     break
-            
+        
         elif not(isSafeInc):
-            # print(f"Unsafe list before check: {test_list}")
- 
-            # Testing increasing list
-             # print("testing increasing")
             element = 0
-            idx = 0
             for i in range(1, len(test_list)):
-                if isCorrected and i == (len(test_list)):
+                if i == len(test_list):
                     continue
                 if test_list[i-1] > test_list[i] and not(isCorrected):
+                    isSafeInc = True
                     element = test_list.pop(i)
-                    i = i
-                    isCorrected = True
-                    # print(f"Popping element: {element}")
+                    idx = i
+                    isCorrected = True    
                     continue
+
                 elif test_list[i-1] > test_list[i] and isCorrected:
+                    isSafeInc = False
                     test_list.insert(idx, element)
-                    isCorrected = False
                     break
 
         elif not(isSafeDec):
-            # print(f"Unsafe list before check: {test_list}")
-            # Testing Decreasing list
-            # print("testing decreasing")
             element = 0
-            idx = 0
             for i in range(1, len(test_list)):
-                if isCorrected and i == (len(test_list)):
-                    continue
                 if test_list[i-1] < test_list[i] and not(isCorrected):
                     isCorrected = True
+                    isSafeDec = True
                     continue
                 elif test_list[i-1] < test_list[i] and isCorrected:
-                    test_list.insert(idx, element)
-                    isCorrected = False
+                    isSafeDec = False
                     break
         
-        if isCorrected:
+        if isSafeDiff and (isSafeInc or isSafeDec):
             num_safe +=1
-          #  print(f"Safe: {test_list}")
-        #else:
-            # print("still unsafe")
-
 
         test_count += 1
         
